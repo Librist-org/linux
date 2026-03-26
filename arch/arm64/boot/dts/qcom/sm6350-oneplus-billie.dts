@@ -29,8 +29,10 @@
 	model = "Oneplus Nord N10 5G";
 	compatible = "oneplus,billie", "qcom,sm6350";
 	chassis-type = "handset";
-	qcom,msm-id = <434 0x10000>, <459 0x10000>; // TODO: can we remove?
-	qcom,board-id = <0x1000b 0>; // TODO: can we remove?
+
+	/* seems required for bootloader to select correct board */
+	qcom,msm-id = <434 0x10000>, <459 0x10000>;
+	qcom,board-id = <0x1000b 0>;
 
 	aliases {
 		serial0 = &uart9;
@@ -260,7 +262,7 @@
 };
 
 /* &dispcc disabled to use simplefb and prevent display
-   going black after after a few seconds */
+   going black after a few seconds */
 
 &dispcc {
 	status = "disabled";
@@ -395,12 +397,6 @@
 	};
 };
 
-// FIXME should be removed with bluetooth pinctrl being proper
-&qup_uart1_tx {
-	/* "qup01" in sm6350.dtsi, "gpio" in fdt */
-	function = "gpio";
-};
-
 &sdc2_on_state {
 	sd-cd-pins {
 		pins = "gpio94";
@@ -487,7 +483,7 @@
 	 */
 	interrupts-extended = <&intc GIC_SPI 602 IRQ_TYPE_LEVEL_HIGH>,
 			      <&tlmm 64 IRQ_TYPE_LEVEL_HIGH>;
-	pinctrl-names = "default", "active", "sleep"; // FIXME pinctrl upstream is different, check FP4 for high-level reference
+	pinctrl-names = "default", "sleep";
 	/*
 	 * in fdt:
 	 *   pinctrl-0 = <0x192 0x193>;
@@ -501,7 +497,6 @@
 	 *   <0x194> -> qupv3_se1_ctsrx, <0x195> -> qupv3_se1_rts, <0x196> -> qupv3_se1_tx
 	 */
 	pinctrl-1 = <&qup_uart1_active_ctsrx &qup_uart1_active_rts &qup_uart1_active_tx>;
-	pinctrl-2 = <&qup_uart1_active_ctsrx &qup_uart1_active_rts &qup_uart1_active_tx>;
 
 	status = "okay";
 
