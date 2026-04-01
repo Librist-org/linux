@@ -15,6 +15,7 @@
 #define PM7250B_SID1 3
 
 #include <dt-bindings/firmware/qcom,scm.h>
+#include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/input/input.h>
 #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
 #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
@@ -371,6 +372,14 @@
 	status = "disabled";
 };
 
+&gpu {
+	status = "okay";
+};
+
+&gpu_zap_shader {
+	firmware-name = "qcom/sm6350/OnePlus/billie/a615_zap.mbn";
+};
+
 &qupv3_id_0 {
 	status = "okay";
 };
@@ -400,12 +409,32 @@
 	status = "okay";
 };
 
+&i2c7 {
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	tfa98xx_smartpa@34 {
+		compatible = "nxp,tfa98xx";
+		reg = <0x34>;
+		reset-gpio =<&tlmm 91 GPIO_ACTIVE_HIGH>;
+		irq-gpio = <&tlmm 134 GPIO_ACTIVE_HIGH>;
+	};
+
+	tfa98xx_smartpa@35 {
+		compatible = "nxp,tfa98xx";
+		reg = <0x35>;
+		reset-gpio =<&tlmm 101 GPIO_ACTIVE_HIGH>;
+		irq-gpio = <&tlmm 107 GPIO_ACTIVE_HIGH>;
+	};
+};
+
 &i2c8 {
 	/* NXP PN544 @ 28 */
 };
 
 &i2c10 {
-	clock-frequency = <100000>; // i2c@990000 -> qcom,clk-freq-out = <0x186a0>;
+	clock-frequency = <100000>;
 
 	status = "okay";
 
@@ -528,7 +557,7 @@
 };
 
 &tlmm {
-	gpio-reserved-ranges = <13 4>, <45 2>, <56 2>; // FIXME: what are they reserved for?
+	gpio-reserved-ranges = <13 4>, <56 2>;
 
 	qup_uart1_ctsrtsrx: qup-uart1-ctsrtsrx-default-state {
 		pins = "gpio61", "gpio62", "gpio64";
